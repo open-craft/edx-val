@@ -22,6 +22,7 @@ from django.core.files.images import ImageFile
 from django.db import DatabaseError
 from django.test import TestCase
 from django.urls import reverse
+from edx_toggles.toggles.testutils import override_waffle_flag
 from fs.memoryfs import MemoryFS
 from fs.osfs import OSFS
 from fs.path import combine
@@ -30,7 +31,6 @@ from lxml import etree
 from mock import Mock, patch
 from rest_framework import status
 
-from edx_toggles.toggles.testutils import override_waffle_flag
 from edxval import api, utils
 from edxval.api import (
     InvalidTranscriptFormat,
