@@ -19,6 +19,7 @@ from lxml import etree
 from lxml.etree import Element, SubElement
 from pysrt.srtexc import Error
 
+from edxval.config.waffle import OVERRIDE_EXISTING_IMPORTED_TRANSCRIPTS
 from edxval.exceptions import (
     InvalidTranscriptFormat,
     InvalidTranscriptProvider,
@@ -1163,6 +1164,12 @@ def import_transcript_from_fs(edx_video_id, language_code, file_name, provider, 
     file_format = None
     existing_transcript = VideoTranscript.get_or_none(edx_video_id, language_code)
 
+    # check if the transcript exists and if it does, make sure that overriding
+    # existing transcripts is enabled before proceeding to import it
+    if (existing_transcript and
+            not OVERRIDE_EXISTING_IMPORTED_TRANSCRIPTS.is_enabled()):
+        return
+
     # Read file from import file system and attach it to transcript record in DS.
     try:
         with resource_fs.open(combine(static_dir, file_name), 'r', encoding='utf-8-sig') as f:
@@ -1190,14 +1197,10 @@ def import_transcript_from_fs(edx_video_id, language_code, file_name, provider, 
     utf8_encoded_file_content = file_content.encode('utf-8')
     new_transcript_content_file = ContentFile(utf8_encoded_file_content)
 
-    # check if transcript content already exists
-    if (
-        existing_transcript and
-        is_duplicate_file(
-            new_transcript_content_file,
-            existing_transcript.transcript.file,
-        )
-    ):
+    # check if transcript content already exists, and if it does, make sure
+    # the transcript isn't a duplicate transcript to the already existing one
+    if (existing_transcript and
+            is_duplicate_file(new_transcript_content_file, existing_transcript.transcript.file)):
         return
 
     # Get file format from transcript content.

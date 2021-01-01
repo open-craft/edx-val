@@ -15,3 +15,6 @@ djangorestframework==3.9.4
 
 # zipp 2.0.0 requires Python >= 3.6
 zipp==1.0.0
+
+# We expect v2.0.0 to introduce large breaking changes in the feature toggle API
+edx-toggles<2.0.0
