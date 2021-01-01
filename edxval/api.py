@@ -50,7 +50,7 @@ from edxval.utils import (
     is_duplicate_file,
 )
 
-logger = logging.getLogger(__name__)  # pylint: disable=C0103
+logger = logging.getLogger(__name__)
 
 
 class VideoSortField(Enum):
@@ -163,7 +163,7 @@ def update_video(video_data):
         error_message = u"Video not found when trying to update video with edx_video_id: {0}".format(
             video_data.get("edx_video_id")
         )
-        raise ValVideoNotFoundError(error_message)
+        raise ValVideoNotFoundError(error_message)  # pylint: disable=raise-missing-from
 
     serializer = VideoSerializer(video, data=video_data)
     if serializer.is_valid():
@@ -190,7 +190,7 @@ def update_video_status(edx_video_id, status):
         error_message = u"Video not found when trying to update video status with edx_video_id: {0}".format(
             edx_video_id
         )
-        raise ValVideoNotFoundError(error_message)
+        raise ValVideoNotFoundError(error_message)  # pylint: disable=raise-missing-from
 
     video.status = status
     video.save()
@@ -506,7 +506,7 @@ def update_video_image(edx_video_id, course_id, image_data, file_name):
             edx_video_id,
             course_id
         )
-        raise ValVideoNotFoundError(error_message)
+        raise ValVideoNotFoundError(error_message)  # pylint: disable=raise-missing-from
 
     video_image, _ = VideoImage.create_or_update(course_video, file_name, image_data)
     return video_image.image_url()
@@ -529,7 +529,7 @@ def create_profile(profile_name):
         profile.full_clean()
         profile.save()
     except ValidationError as err:
-        raise ValCannotCreateError(err.message_dict)
+        raise ValCannotCreateError(err.message_dict)  # pylint: disable=raise-missing-from
 
 
 def _get_video(edx_video_id):
@@ -546,11 +546,11 @@ def _get_video(edx_video_id):
                     .get(edx_video_id=edx_video_id)
     except Video.DoesNotExist:
         error_message = u"Video not found for edx_video_id: {0}".format(edx_video_id)
-        raise ValVideoNotFoundError(error_message)
+        raise ValVideoNotFoundError(error_message)  # pylint: disable=raise-missing-from
     except Exception:
         error_message = u"Could not get edx_video_id: {0}".format(edx_video_id)
         logger.exception(error_message)
-        raise ValInternalError(error_message)
+        raise ValInternalError(error_message)  # pylint: disable=raise-missing-from
 
 
 def get_video_info(edx_video_id):
@@ -835,7 +835,7 @@ def get_video_info_for_course_and_profiles(course_id, profiles):
     except Exception:
         error_message = u"Could not get encoded videos for course: {0}".format(course_id)
         logger.exception(error_message)
-        raise ValInternalError(error_message)
+        raise ValInternalError(error_message)  # pylint: disable=raise-missing-from
 
     # DRF serializers were causing extra queries for some reason...
     return_dict = {}
@@ -1097,7 +1097,7 @@ def import_from_xml(xml, edx_video_id, resource_fs, static_dir, external_transcr
         return edx_video_id
     except ValidationError as err:
         logger.exception(xml)
-        raise ValCannotCreateError(err.message_dict)
+        raise ValCannotCreateError(err.message_dict)  # pylint: disable=raise-missing-from
     except Video.DoesNotExist:
         pass
 
