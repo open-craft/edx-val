@@ -8,6 +8,7 @@ from setuptools import setup
 
 PACKAGES = [
     'edxval',
+    'edxval.config',
     'edxval.migrations',
     'edxval.tests',
 ]
