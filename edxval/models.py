@@ -461,8 +461,7 @@ class VideoTranscript(TimeStampedModel):
 
         # save the transcript file
         if file_data:
-            with closing(file_data.open()) as transcript_content:
-                self.transcript.save(file_name, transcript_content)
+            self.transcript.save(file_name, file_data)
         else:
             self.transcript.name = file_name
 
